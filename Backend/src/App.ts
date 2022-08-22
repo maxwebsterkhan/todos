@@ -21,7 +21,8 @@ const connectDb = async () => {
           host: process.env.PGHOST,
           database: process.env.PGDATABASE,
           password: process.env.PGPASSWORD,
-          port: 5432
+          port: Number(process.env.PORT)
+
       });
 
       await pool.connect()

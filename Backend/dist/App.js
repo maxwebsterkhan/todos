@@ -30,7 +30,7 @@ const connectDb = () => __awaiter(void 0, void 0, void 0, function* () {
             host: process.env.PGHOST,
             database: process.env.PGDATABASE,
             password: process.env.PGPASSWORD,
-            port: 5432
+            port: Number(process.env.PORT)
         });
         yield pool.connect();
         const res = yield pool.query('SELECT * FROM api');
