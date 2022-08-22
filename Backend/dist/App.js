@@ -23,19 +23,22 @@ app.get("/test", (req, res, next) => {
 app.listen(process.env.PORT, () => {
     console.log(`Server is running at ${process.env.PORT}`);
 });
-const pool = new pg_1.Pool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    database: process.env.DB_NAME,
-    password: process.env.DB_PASSWORD,
-    port: parseInt(process.env.DB_PORT || "5432")
-});
-const connectToDB = () => __awaiter(void 0, void 0, void 0, function* () {
+const connectDb = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const pool = new pg_1.Pool({
+            user: process.env.PGUSER,
+            host: process.env.PGHOST,
+            database: process.env.PGDATABASE,
+            password: process.env.PGPASSWORD,
+            port: 5432
+        });
         yield pool.connect();
+        const res = yield pool.query('SELECT * FROM api');
+        console.log(res);
+        yield pool.end();
     }
-    catch (err) {
-        console.log(err);
+    catch (error) {
+        console.log(error);
     }
 });
-connectToDB();
+connectDb();
