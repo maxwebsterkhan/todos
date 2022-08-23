@@ -8,18 +8,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
-const db = require("./Db");
-require("dotenv").config();
-const app = (0, express_1.default)();
-app.listen(process.env.PORT, () => {
-    console.log(`Server is running at  http://localhost:${process.env.PORT}`);
-});
+const express = require("express");
+const exphbs = require("express-handlebars");
+const methodOverride = require("method-override");
+const helpers = require("handlebars-helpers");
+const db = require("./db");
+const app = express();
+const port = 3000;
+app.engine('.hbs', exphbs.engine({ extname: '.hbs', defaultLayout: "main" }));
+app.set("view engine", "handlebars");
+app.use(express.static(`${__dirname}/public`));
+app.use(methodOverride("_method"));
 app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const queryResult = yield db.query("select * from recipe");
     res.send(queryResult.rows);
 }));
+app.listen(port, () => {
+    console.log(`Example app listening at http://localhost:${port}`);
+});

@@ -1,14 +1,21 @@
-import express, { NextFunction, Request, Response } from "express";
-const db = require("./Db");
-require("dotenv").config();
-
+const express = require("express");
+const exphbs = require("express-handlebars");
+const methodOverride = require("method-override");
+const helpers = require("handlebars-helpers");
+const db = require("./db");
 const app = express();
+const port = 3000;
 
-app.listen(process.env.PORT, () => {
-  console.log(`Server is running at  http://localhost:${process.env.PORT}`);
-});
+app.engine('.hbs', exphbs.engine({ extname: '.hbs', defaultLayout: "main"}));
+app.set("view engine", "handlebars");
+app.use(express.static(`${__dirname}/public`));
+app.use(methodOverride("_method"));
 
-app.get("/", async (req, res) => {
+app.get("/", async (req: any, res: any) => {
   const queryResult = await db.query("select * from recipe");
   res.send(queryResult.rows);
+});
+
+app.listen(port, () => {
+  console.log(`Example app listening at http://localhost:${port}`);
 });
