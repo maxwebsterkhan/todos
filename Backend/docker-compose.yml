@@ -14,13 +14,9 @@ services:
   db:
     container_name: postgres
     image: postgres
-    ports:
-      - "5433:${PGPORT}"
-    volumes:
-      - data:/data/db
-    environment:
-      - POSTGRES_PASSWORD=${PGPASSWORD}
-      - POSTGRES_DB=${PGNAME}
+    hostname: postgres
+    env_file:
+      - './.env'
 
 volumes:
   data: {}

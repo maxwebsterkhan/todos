@@ -13,32 +13,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const dotenv_1 = __importDefault(require("dotenv"));
-const pg_1 = require("pg");
+const db = require("./Db");
+require("dotenv").config();
 const app = (0, express_1.default)();
-dotenv_1.default.config(); //Reads .env file and makes it accessible via process.env
-app.get("/test", (req, res, next) => {
-    res.send("hi");
-});
 app.listen(process.env.PORT, () => {
-    console.log(`Server is running at ${process.env.PORT}`);
+    console.log(`Server is running at  http://localhost:${process.env.PORT}`);
 });
-const connectDb = () => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const pool = new pg_1.Pool({
-            user: process.env.PGUSER,
-            host: process.env.PGHOST,
-            database: process.env.PGDATABASE,
-            password: process.env.PGPASSWORD,
-            port: Number(process.env.PORT)
-        });
-        yield pool.connect();
-        const res = yield pool.query('SELECT * FROM api');
-        console.log(res);
-        yield pool.end();
-    }
-    catch (error) {
-        console.log(error);
-    }
-});
-connectDb();
+app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const queryResult = yield db.query("select * from recipe");
+    res.send(queryResult.rows);
+}));
