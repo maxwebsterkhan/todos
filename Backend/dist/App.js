@@ -9,20 +9,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 const express = require("express");
-const exphbs = require("express-handlebars");
-const methodOverride = require("method-override");
-const helpers = require("handlebars-helpers");
-const db = require("./db");
+const db = require("./Db");
 const app = express();
-const port = 3000;
-app.engine('.hbs', exphbs.engine({ extname: '.hbs', defaultLayout: "main" }));
-app.set("view engine", "handlebars");
-app.use(express.static(`${__dirname}/public`));
-app.use(methodOverride("_method"));
-app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const queryResult = yield db.query("select * from recipe");
+require("dotenv").config();
+app.use(express.json());
+app.use(function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Credentials", "true");
+    res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,PATCH,OPTIONS");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
+app.get("/todos", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const queryResult = yield db.query("select * from todo");
     res.send(queryResult.rows);
 }));
-app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`);
+app.listen(process.env.PORT || 5000, () => {
+    console.log(`server has started on port ${process.env.PORT || 5000}`);
 });

@@ -12,6 +12,7 @@
     "build": "tsc"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.18.1",
     "express-handlebars": "^6.0.6",
     "handlebars-helpers": "^0.10.0",
