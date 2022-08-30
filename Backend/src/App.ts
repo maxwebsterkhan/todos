@@ -1,7 +1,7 @@
 const express = require("express");
-const db = require("./Db");
 const app = express();
-
+const cors = require("cors");
+const newPool = require("./Db");
 require("dotenv").config();
 
 app.use(express.json());
@@ -22,7 +22,7 @@ app.use(function (req: any, res: any, next: any) {
 
 // get all todos
 app.get("/todos", async (req: any, res: any) => {
-  const queryResult = await db.query("select * from todo");
+  const queryResult = await newPool.query("select * from todo");
   res.send(queryResult.rows);
 });
 
@@ -30,7 +30,7 @@ app.get("/todos", async (req: any, res: any) => {
 app.post("/todos", async (req: any, res: any) => {
   try {
     const { description } = req.body;
-    const newTodo = await pool.query(
+    const newTodo = await newPool.query(
       "INSERT INTO todo (description) VALUES($1) RETURNING *",
       [description]
     );
@@ -44,7 +44,7 @@ app.post("/todos", async (req: any, res: any) => {
 app.get("/todos/:id", async (req: any, res: any) => {
   try {
     const { id } = req.params;
-    const todo = await pool.query("SELECT * FROM todo WHERE todo_id = $1", [
+    const todo = await newPool.query("SELECT * FROM todo WHERE todo_id = $1", [
       id,
     ]);
     res.json(todo.rows[0]);
@@ -58,12 +58,12 @@ app.put("/todos/:id", async (req: any, res: any) => {
     const { id } = req.params;
     const { description, completed } = req.body;
     if (description) {
-      const editTodo = await pool.query(
+      const editTodo = await newPool.query(
         "UPDATE todo SET description = $1 WHERE todo_id = $2",
         [description, id]
       );
     } else if (completed) {
-      const completeTodo = await pool.query(
+      const completeTodo = await newPool.query(
         "UPDATE todo SET completed = $1 WHERE todo_id = $2",
         [completed, id]
       );
@@ -77,9 +77,10 @@ app.put("/todos/:id", async (req: any, res: any) => {
 app.delete("/todos/:id", async (req: any, res: any) => {
   try {
     const { id } = req.params;
-    const deleteTodo = await pool.query("DELETE FROM todo WHERE todo_id = $1", [
-      id,
-    ]);
+    const deleteTodo = await newPool.query(
+      "DELETE FROM todo WHERE todo_id = $1",
+      [id]
+    );
     res.json("Todo was deleted!");
   } catch (error: any) {
     console.error(error.message);

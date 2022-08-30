@@ -9,8 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 const express = require("express");
-const db = require("./Db");
 const app = express();
+const cors = require("cors");
+const newPool = require("./Db");
 require("dotenv").config();
 app.use(express.json());
 app.use(function (req, res, next) {
@@ -20,9 +21,60 @@ app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
+// get all todos
 app.get("/todos", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const queryResult = yield db.query("select * from todo");
+    const queryResult = yield newPool.query("select * from todo");
     res.send(queryResult.rows);
+}));
+// create a todo
+app.post("/todos", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { description } = req.body;
+        const newTodo = yield newPool.query("INSERT INTO todo (description) VALUES($1) RETURNING *", [description]);
+        res.json(newTodo.rows[0]);
+    }
+    catch (error) {
+        console.error(error.message);
+    }
+}));
+// get a todo
+app.get("/todos/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        const todo = yield newPool.query("SELECT * FROM todo WHERE todo_id = $1", [
+            id,
+        ]);
+        res.json(todo.rows[0]);
+    }
+    catch (error) {
+        console.error(error.message);
+    }
+}));
+app.put("/todos/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        const { description, completed } = req.body;
+        if (description) {
+            const editTodo = yield newPool.query("UPDATE todo SET description = $1 WHERE todo_id = $2", [description, id]);
+        }
+        else if (completed) {
+            const completeTodo = yield newPool.query("UPDATE todo SET completed = $1 WHERE todo_id = $2", [completed, id]);
+        }
+        res.json("todo was updated");
+    }
+    catch (error) {
+        console.error(error.message);
+    }
+}));
+app.delete("/todos/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        const deleteTodo = yield newPool.query("DELETE FROM todo WHERE todo_id = $1", [id]);
+        res.json("Todo was deleted!");
+    }
+    catch (error) {
+        console.error(error.message);
+    }
 }));
 app.listen(process.env.PORT || 5000, () => {
     console.log(`server has started on port ${process.env.PORT || 5000}`);

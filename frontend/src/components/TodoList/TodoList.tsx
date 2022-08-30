@@ -23,6 +23,18 @@ const TodoList = () => {
     }
   };
 
+  const deleteTodo = async (id: string) => {
+    try {
+      await fetch(`http://localhost:3000/todos/${id}`, {
+        method: "DELETE",
+      });
+      setTodos(todos.filter((todo) => todo.todo_id !== id));
+      console.log("deleted");
+    } catch (error: any) {
+      console.error(error.message);
+    }
+  };
+
   useEffect(() => {
     getTodos();
   }, []);
@@ -34,6 +46,7 @@ const TodoList = () => {
           <div key={todo.todo_id}>
             <p>{todo.description}</p>
             <p>{todo.completed ? "Completed" : "Not Completed"}</p>
+            <div onClick={() => deleteTodo(todo.todo_id)}>X</div>
           </div>
         );
       })}
