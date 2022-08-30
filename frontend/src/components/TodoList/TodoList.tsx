@@ -11,7 +11,6 @@ interface ToDoContainer extends Array<todoListProps> {}
 
 const TodoList = () => {
   const [todos, setTodos] = useState<ToDoContainer>([]);
-  console.log(todos);
 
   const getTodos = async () => {
     try {
