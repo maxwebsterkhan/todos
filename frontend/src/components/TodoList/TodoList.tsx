@@ -13,7 +13,7 @@ const TodoList = () => {
   const [todos, setTodos] = useState<ToDoContainer>([]);
   const [values, setValues] = useState<any>("");
 
-  const handleChange = (event: any) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValues((values: object) => {
       return { ...values, [event.target.name]: event.target.value };
     });
