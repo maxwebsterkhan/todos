@@ -11,6 +11,13 @@ interface ToDoContainer extends Array<TodoListProps> {}
 
 const TodoList = () => {
   const [todos, setTodos] = useState<ToDoContainer>([]);
+  const [values, setValues] = useState<any>("");
+
+  const handleChange = (event: any) => {
+    setValues((values: object) => {
+      return { ...values, [event.target.name]: event.target.value };
+    });
+  };
 
   const getTodos = async () => {
     try {
@@ -73,21 +80,20 @@ const TodoList = () => {
   return (
     <div className="TodoList">
       {todos.map((todo) => {
+        const { todo_id, description, completed } = todo;
         return (
-          <div key={todo.todo_id}>
-            <div onClick={() => completeTodo(todo.todo_id, !todo.completed)}>
-              O
-            </div>
-            <p>{todo.description}</p>
-            <p>{todo.completed ? "Completed" : "Not Completed"}</p>
-            <div onClick={() => deleteTodo(todo.todo_id)}>X</div>
-            <textarea
-              value={todo.description}
-              onChange={(event) => editTodo(todo.todo_id, event.target.value)}
+          <div key={todo_id}>
+            <div onClick={() => completeTodo(todo_id, !completed)}>O</div>
+            <p>{description}</p>
+            <p>{completed ? "Completed" : "Not Completed"}</p>
+            <div onClick={() => deleteTodo(todo_id)}>X</div>
+            <input
+              id={todo_id}
+              name={todo_id}
+              value={values[todo_id] || ""}
+              onChange={handleChange}
             />
-            <div onClick={() => editTodo(todo.todo_id, todo.description)}>
-              update
-            </div>
+            <div onClick={() => editTodo(todo_id, values[todo_id])}>update</div>
           </div>
         );
       })}
