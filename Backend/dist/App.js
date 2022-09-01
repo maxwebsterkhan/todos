@@ -11,7 +11,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
 const app = express();
-const cors = require("cors");
 const newPool = require("./Db");
 require("dotenv").config();
 app.use(express.json());

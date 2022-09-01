@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
 import "./TodoList.scss";
 
-export interface TodoListProps {
+interface TodoListProps {
   todo_id: string;
   description: string;
   completed: boolean;
   values: object;
 }
-
 interface ToDoContainer extends Array<TodoListProps> {}
-type ValuesObject = { [key: string]: string };
+
+type ValuesObject = {
+  [todo_id: TodoListProps["todo_id"]]: TodoListProps["description"];
+};
 
 const TodoList = () => {
   const [todos, setTodos] = useState<ToDoContainer>([]);
