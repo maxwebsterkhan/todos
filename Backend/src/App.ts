@@ -1,4 +1,5 @@
 const express = require("express");
+import { Request, Response, NextFunction } from "express";
 const app = express();
 const cors = require("cors");
 const newPool = require("./Db");
@@ -6,7 +7,7 @@ require("dotenv").config();
 
 app.use(express.json());
 
-app.use(function (req: any, res: any, next: any) {
+app.use(function (req: Request, res: Response, next: NextFunction) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Credentials", "true");
   res.header(
@@ -21,13 +22,13 @@ app.use(function (req: any, res: any, next: any) {
 });
 
 // get all todos
-app.get("/todos", async (req: any, res: any) => {
+app.get("/todos", async (req: Request, res: any) => {
   const queryResult = await newPool.query("select * from todo");
   res.send(queryResult.rows);
 });
 
 // create a todo
-app.post("/todos", async (req: any, res: any) => {
+app.post("/todos", async (req: Request, res: Response) => {
   try {
     const { description } = req.body;
     const newTodo = await newPool.query(
@@ -41,7 +42,7 @@ app.post("/todos", async (req: any, res: any) => {
 });
 
 // get a todo
-app.get("/todos/:id", async (req: any, res: any) => {
+app.get("/todos/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const todo = await newPool.query("SELECT * FROM todo WHERE todo_id = $1", [
@@ -53,7 +54,7 @@ app.get("/todos/:id", async (req: any, res: any) => {
   }
 });
 
-app.put("/todos/:id", async (req: any, res: any) => {
+app.put("/todos/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const { description, completed } = req.body;
@@ -74,7 +75,7 @@ app.put("/todos/:id", async (req: any, res: any) => {
   }
 });
 
-app.delete("/todos/:id", async (req: any, res: any) => {
+app.delete("/todos/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const deleteTodo = await newPool.query(
