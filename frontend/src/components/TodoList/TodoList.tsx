@@ -5,16 +5,18 @@ export interface TodoListProps {
   todo_id: string;
   description: string;
   completed: boolean;
+  values: object;
 }
 
 interface ToDoContainer extends Array<TodoListProps> {}
+type ValuesObject = { [key: string]: string };
 
 const TodoList = () => {
   const [todos, setTodos] = useState<ToDoContainer>([]);
-  const [values, setValues] = useState<any>("");
+  const [values, setValues] = useState<ValuesObject>({});
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValues((values: object) => {
+    setValues((values) => {
       return { ...values, [event.target.name]: event.target.value };
     });
   };

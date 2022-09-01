@@ -1,7 +1,6 @@
-const express = require("express");
 import { Request, Response, NextFunction } from "express";
+const express = require("express");
 const app = express();
-const cors = require("cors");
 const newPool = require("./Db");
 require("dotenv").config();
 
@@ -22,7 +21,7 @@ app.use(function (req: Request, res: Response, next: NextFunction) {
 });
 
 // get all todos
-app.get("/todos", async (req: Request, res: any) => {
+app.get("/todos", async (req: Request, res: Response) => {
   const queryResult = await newPool.query("select * from todo");
   res.send(queryResult.rows);
 });
