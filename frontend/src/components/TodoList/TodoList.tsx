@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { Grid, Paper } from "@mui/material";
+import { Fragment, useEffect, useState } from "react";
 import "./TodoList.scss";
 
 interface TodoListProps {
@@ -6,6 +7,7 @@ interface TodoListProps {
   description: string;
   completed: boolean;
   values: object;
+  editing: boolean;
 }
 interface ToDoContainer extends Array<TodoListProps> {}
 
@@ -13,13 +15,38 @@ type ValuesObject = {
   [todo_id: TodoListProps["todo_id"]]: TodoListProps["description"];
 };
 
+type EditingObject = {
+  [todo_id: TodoListProps["todo_id"]]: TodoListProps["editing"];
+};
+
+const styles = {
+  Icon: {
+    marginLeft: "auto",
+  } as React.CSSProperties,
+  Paper: {
+    margin: "auto",
+    padding: 10,
+    display: "flex",
+    alignItems: "center",
+    marginTop: 10,
+    width: 500,
+  } as React.CSSProperties,
+};
+
 const TodoList = () => {
   const [todos, setTodos] = useState<ToDoContainer>([]);
   const [values, setValues] = useState<ValuesObject>({});
+  const [editing, setEditing] = useState<EditingObject>({});
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValues((values) => {
       return { ...values, [event.target.name]: event.target.value };
+    });
+  };
+
+  const handleEditing = (todo_id: string) => {
+    setEditing((editing) => {
+      return { ...editing, [todo_id]: !editing[todo_id] };
     });
   };
 
@@ -72,6 +99,7 @@ const TodoList = () => {
           return todo.todo_id === id ? { ...todo, description } : todo;
         })
       );
+      handleEditing(id);
     } catch (error: any) {
       console.error(error.message);
     }
@@ -82,26 +110,37 @@ const TodoList = () => {
   }, []);
 
   return (
-    <div className="TodoList">
+    <Fragment>
       {todos.map((todo) => {
         const { todo_id, description, completed } = todo;
         return (
-          <div key={todo_id}>
-            <div onClick={() => completeTodo(todo_id, !completed)}>O</div>
-            <p>{description}</p>
-            <p>{completed ? "Completed" : "Not Completed"}</p>
-            <div onClick={() => deleteTodo(todo_id)}>X</div>
-            <input
-              id={todo_id}
-              name={todo_id}
-              value={values[todo_id] || ""}
-              onChange={handleChange}
-            />
-            <div onClick={() => editTodo(todo_id, values[todo_id])}>update</div>
-          </div>
+          <Grid key={todo_id} xs={12} item>
+            <Paper elevation={2} style={styles.Paper}>
+              <p>{description}</p>
+              <p>{completed ? "Completed" : "Not Completed"}</p>
+              <div onClick={() => completeTodo(todo_id, !completed)}>O</div>
+              <div onClick={() => deleteTodo(todo_id)}>X</div>
+              {editing[todo_id] ? (
+                <Fragment>
+                  <input
+                    id={todo_id}
+                    name={todo_id}
+                    value={values[todo_id] || ""}
+                    onChange={handleChange}
+                  />
+
+                  <div onClick={() => editTodo(todo_id, values[todo_id])}>
+                    update
+                  </div>
+                </Fragment>
+              ) : (
+                <div onClick={() => handleEditing(todo_id)}>not editing</div>
+              )}
+            </Paper>
+          </Grid>
         );
       })}
-    </div>
+    </Fragment>
   );
 };
 

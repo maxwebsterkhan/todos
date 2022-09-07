@@ -1,3 +1,4 @@
+import { Button, Input } from "@mui/material";
 import React, { useState } from "react";
 
 export interface CreateTodoProps {
@@ -31,9 +32,25 @@ export function CreateTodo(props: CreateTodoProps) {
   };
 
   return (
-    <form onSubmit={onSubmit}>
-      <input value={description} onChange={inputHandler} />
-      <button>Add</button>
+    <form style={{ display: "flex" }} onSubmit={onSubmit}>
+      <Input
+        placeholder="Add a todo"
+        inputProps={{
+          "aria-label": "description",
+        }}
+        style={{ width: "90%" }}
+        value={description}
+        onChange={inputHandler}
+      />
+
+      <Button
+        type="submit"
+        variant="outlined"
+        color="primary"
+        style={{ width: "10%", marginLeft: "2%" }}
+      >
+        Add
+      </Button>
     </form>
   );
 }
