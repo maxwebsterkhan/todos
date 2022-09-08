@@ -1,5 +1,6 @@
 import { Button, Input } from "@mui/material";
 import React, { useState } from "react";
+import AddTaskSharpIcon from "@mui/icons-material/AddTaskSharp";
 
 export interface CreateTodoProps {
   description?: string;
@@ -45,11 +46,11 @@ export function CreateTodo(props: CreateTodoProps) {
 
       <Button
         type="submit"
-        variant="outlined"
+        variant="text"
         color="primary"
         style={{ width: "10%", marginLeft: "2%" }}
       >
-        Add
+        <AddTaskSharpIcon />
       </Button>
     </form>
   );

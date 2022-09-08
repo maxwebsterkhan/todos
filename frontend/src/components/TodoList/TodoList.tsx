@@ -1,6 +1,11 @@
-import { Grid, Paper } from "@mui/material";
 import { Fragment, useEffect, useState } from "react";
-import "./TodoList.scss";
+import { Grid, Input, Paper } from "@mui/material";
+import DeleteSharpIcon from "@mui/icons-material/DeleteSharp";
+import AssignmentTurnedInSharpIcon from "@mui/icons-material/AssignmentTurnedInSharp";
+import NoteAltSharpIcon from "@mui/icons-material/NoteAltSharp";
+import DoneIcon from "@mui/icons-material/Done";
+import CloseIcon from "@mui/icons-material/Close";
+import { Close } from "@mui/icons-material";
 
 interface TodoListProps {
   todo_id: string;
@@ -116,26 +121,43 @@ const TodoList = () => {
         return (
           <Grid key={todo_id} xs={12} item>
             <Paper elevation={2} style={styles.Paper}>
-              <p>{description}</p>
-              <p>{completed ? "Completed" : "Not Completed"}</p>
-              <div onClick={() => completeTodo(todo_id, !completed)}>O</div>
-              <div onClick={() => deleteTodo(todo_id)}>X</div>
+              {!editing[todo_id] && (
+                <p
+                  style={{
+                    textDecoration: completed ? "line-through" : "",
+                    marginRight: "auto",
+                  }}
+                >
+                  {description}
+                </p>
+              )}
               {editing[todo_id] ? (
                 <Fragment>
-                  <input
+                  <Input
                     id={todo_id}
                     name={todo_id}
                     value={values[todo_id] || ""}
                     onChange={handleChange}
+                    placeholder="Add a todo"
+                    style={{ width: "90%", marginRight: "auto" }}
                   />
 
                   <div onClick={() => editTodo(todo_id, values[todo_id])}>
-                    update
+                    <AssignmentTurnedInSharpIcon />
                   </div>
                 </Fragment>
               ) : (
-                <div onClick={() => handleEditing(todo_id)}>not editing</div>
+                <div onClick={() => handleEditing(todo_id)}>
+                  <NoteAltSharpIcon />
+                </div>
               )}
+              <div onClick={() => completeTodo(todo_id, !completed)}>
+                {completed ? <CloseIcon /> : <DoneIcon />}
+              </div>
+
+              <div onClick={() => deleteTodo(todo_id)}>
+                <DeleteSharpIcon />
+              </div>
             </Paper>
           </Grid>
         );
