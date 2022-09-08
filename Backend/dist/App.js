@@ -53,13 +53,19 @@ app.get("/todos/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* 
 app.put("/todos/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
-        const { description, completed } = req.body;
-        if (description) {
-            const editTodo = yield newPool.query("UPDATE todo SET description = $1 WHERE todo_id = $2", [description, id]);
-        }
-        else if (completed) {
-            const completeTodo = yield newPool.query("UPDATE todo SET completed = $1 WHERE todo_id = $2", [completed, id]);
-        }
+        const { description } = req.body;
+        const editTodo = yield newPool.query("UPDATE todo SET description = $1 WHERE todo_id = $2", [description, id]);
+        res.json("todo was updated");
+    }
+    catch (error) {
+        console.error(error.message);
+    }
+}));
+app.put("/todos/complete/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        const { completed } = req.body;
+        const completeTodo = yield newPool.query("UPDATE todo SET completed = $1 WHERE todo_id = $2", [completed, id]);
         res.json("todo was updated");
     }
     catch (error) {

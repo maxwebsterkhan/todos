@@ -56,18 +56,25 @@ app.get("/todos/:id", async (req: Request, res: Response) => {
 app.put("/todos/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { description, completed } = req.body;
-    if (description) {
-      const editTodo = await newPool.query(
-        "UPDATE todo SET description = $1 WHERE todo_id = $2",
-        [description, id]
-      );
-    } else if (completed) {
-      const completeTodo = await newPool.query(
-        "UPDATE todo SET completed = $1 WHERE todo_id = $2",
-        [completed, id]
-      );
-    }
+    const { description } = req.body;
+    const editTodo = await newPool.query(
+      "UPDATE todo SET description = $1 WHERE todo_id = $2",
+      [description, id]
+    );
+    res.json("todo was updated");
+  } catch (error: any) {
+    console.error(error.message);
+  }
+});
+
+app.put("/todos/complete/:id", async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { completed } = req.body;
+    const completeTodo = await newPool.query(
+      "UPDATE todo SET completed = $1 WHERE todo_id = $2",
+      [completed, id]
+    );
     res.json("todo was updated");
   } catch (error: any) {
     console.error(error.message);

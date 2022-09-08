@@ -5,7 +5,6 @@ import AssignmentTurnedInSharpIcon from "@mui/icons-material/AssignmentTurnedInS
 import NoteAltSharpIcon from "@mui/icons-material/NoteAltSharp";
 import DoneIcon from "@mui/icons-material/Done";
 import CloseIcon from "@mui/icons-material/Close";
-import { Close } from "@mui/icons-material";
 
 interface TodoListProps {
   todo_id: string;
@@ -79,8 +78,10 @@ const TodoList = () => {
 
   const completeTodo = async (id: string, completed: boolean) => {
     try {
-      await fetch(`http://localhost:3000/todos/${id}`, {
+      await fetch(`http://localhost:3000/todos/complete/${id}`, {
         method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ completed }),
       });
       setTodos(
         todos.map((todo) => {
@@ -134,8 +135,8 @@ const TodoList = () => {
               {editing[todo_id] ? (
                 <Fragment>
                   <Input
-                    id={todo_id}
-                    name={todo_id}
+                    id={todo_id.toString()}
+                    name={todo_id.toString()}
                     value={values[todo_id] || ""}
                     onChange={handleChange}
                     placeholder="Add a todo"
@@ -154,6 +155,7 @@ const TodoList = () => {
               <div onClick={() => completeTodo(todo_id, !completed)}>
                 {completed ? <CloseIcon /> : <DoneIcon />}
               </div>
+              {completed ? "Incomplete" : "Complete"}
 
               <div onClick={() => deleteTodo(todo_id)}>
                 <DeleteSharpIcon />
